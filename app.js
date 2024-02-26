@@ -6,6 +6,7 @@ const app=express()
 
 const member=require("./controller/member")
 const packageroute=require("./controller/packageRoute")
+const Trainerroute=require("./controller/TrainerRouter")
 
 app.use(express.json())
 app.use(cors())
@@ -14,6 +15,7 @@ mongoose.connect("mongodb+srv://Taniya12:TAN12122001@cluster0.vfq897t.mongodb.ne
 
 app.use("/api/member",member)
 app.use("/api/users",packageroute)
+app.use("/api/trainer",Trainerroute)
 
 app.listen(3006,()=>{
     console.log("Server Running")
