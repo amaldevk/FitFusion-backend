@@ -4,6 +4,7 @@ const cors=require("cors")
 
 const app=express()
 
+const gymRoute=require("./controller/gymRoute")
 
 app.use(express.json())
 app.use(cors())
