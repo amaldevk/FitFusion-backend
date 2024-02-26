@@ -56,6 +56,30 @@ router.get("/viewregistered",async(req,res)=>{
 
 })
 
+router.post("/MemberDetails", async (req, res) => {
+    try {
+        const members = await memberModel.find({}, {
+            username: 1,
+            paymentStatus: 1,
+            name: 1,
+            age: 1,
+            contactno: 1,
+            emailid: 1,
+            gender: 1,
+            bloodgroup: 1,
+            height: 1,
+            weight: 1,
+            idproof: 1,
+            _id: 0 // Excluding the _id field from the response
+        });
+        res.json(members);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+
 router.post("/update",async(req,res)=>{
     console.log(req.body)
     let {id,...rest} = req.body
