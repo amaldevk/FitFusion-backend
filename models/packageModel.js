@@ -2,25 +2,18 @@ const mongoose=require("mongoose")
 
 const packageschema=new mongoose.Schema(
     {
-        memberid:{
+
+        packageName:{
             type:String,
             required:true
         },
-        name:{
+        price:{
             type:String,
             required:true
         },
-        package:{
+        duration:{
             type:String,
             required:true
-        },
-        paymentStatus:{
-            type:String,
-            required:true
-        },
-        date:{
-            type:Date,
-            default:Date.now
         }
     }
 )
