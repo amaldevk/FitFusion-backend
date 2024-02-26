@@ -1,5 +1,5 @@
 const express=require("express")
-const gymModel=require("../models/gymModel")
+const memberModel=require("../models/memberModel")
 
 const router=express.Router()
 
@@ -15,7 +15,7 @@ router.post("/signup",async(req,res)=>{
     let password=data.password
     const hashedPassword=await hashPasswordgenerator(password)
     data.password=hashedPassword
-    let user=new gymModel(data)
+    let user=new memberModel(data)
     let result=await user.save()
     res.json(
         {
