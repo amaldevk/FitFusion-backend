@@ -13,7 +13,7 @@ app.use(cors())
 mongoose.connect("mongodb+srv://Taniya12:TAN12122001@cluster0.vfq897t.mongodb.net/gymDb?retryWrites=true&w=majority",{useNewUrlParser:true})
 
 app.use("/api/member",member)
-app.use("/api/users",packageroute)
+app.use("/api/packages",packageroute)
 
 app.listen(3006,()=>{
     console.log("Server Running")
