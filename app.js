@@ -15,6 +15,6 @@ mongoose.connect("mongodb+srv://Taniya12:TAN12122001@cluster0.vfq897t.mongodb.ne
 app.use("/api/member",member)
 app.use("/api/users",packageroute)
 
-app.listen(3005,()=>{
+app.listen(3006,()=>{
     console.log("Server Running")
 })
