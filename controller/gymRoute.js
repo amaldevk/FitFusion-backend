@@ -24,4 +24,29 @@ router.post("/signup",async(req,res)=>{
     )
 })
 
+router.post("/login",async(req,res)=>{
+    let input=req.body
+    let username=req.body.username
+    let data=await gymModel.findOne({"username":username})
+    if (!data) {
+        return res.json({
+            status:"Invalid user"
+        })
+    }
+    console.log(data)
+    let dbpassword=data.password
+    let inputpassword=req.body.password
+    console.log(dbpassword)
+    console.log(inputpassword)
+    const match=await bcrypt.compare(inputpassword,dbpassword)
+    if (!match) {
+        return res.json({
+            status:"Incorrect password"
+        })
+    }
+    res.json({
+        status:"success"
+    })
+})
+
 module.exports=router

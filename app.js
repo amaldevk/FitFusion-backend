@@ -9,7 +9,7 @@ const gymRoute=require("./controller/gymRoute")
 app.use(express.json())
 app.use(cors())
 
-mongoose.connect("mongodb+srv://taniya:taniya123@cluster0.zld0daa.mongodb.net/gymappDb?retryWrites=true&w=majority",{useNewUrlParser:true})
+mongoose.connect("mongodb+srv://Taniya12:TAN12122001@cluster0.vfq897t.mongodb.net/gymDb?retryWrites=true&w=majority",{useNewUrlParser:true})
 
 app.use("/api/gym",gymRoute)
 
