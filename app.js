@@ -12,7 +12,7 @@ const Trainerroute=require("./controller/TrainerRouter")
 app.use(express.json())
 app.use(cors())
 
-mongoose.connect("mongodb+srv://Taniya12:TAN12122001@cluster0.vfq897t.mongodb.net/gymappDb?retryWrites=true&w=majority",{useNewUrlParser:true})
+mongoose.connect("mongodb+srv://Taniya12:TAN12122001@cluster0.vfq897t.mongodb.net/gymDb?retryWrites=true&w=majority",{useNewUrlParser:true})
 
 app.use("/api/member",member)
 app.use("/api/admin",adminRoute)
