@@ -1,6 +1,6 @@
 const express=require("express")
 const memberModel=require("../models/memberModel")
-const searchmodel=require("../models/searchModel")
+
 
 const router=express.Router()
 
@@ -54,7 +54,7 @@ router.get("/search",async(req,res)=>{
     let name=req.body.name
     let data=await memberModel.find({"name":name})
    
-    if (!data) {
+    if (!data || data.length === 0) {
         return res.json({
             status:"Invalid user"
         })
