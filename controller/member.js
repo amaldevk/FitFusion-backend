@@ -54,12 +54,6 @@ router.post("/login",async(req,res)=>{
         status:"success"
     })
 })
-router.get("/search",(req,res)=>
-{
-    
-})
-
-
 
 router.get("/MemberDetails", async (req, res) => {
     try {
