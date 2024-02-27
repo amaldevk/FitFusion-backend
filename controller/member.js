@@ -28,7 +28,7 @@ router.post("/signup",async(req,res)=>{
 router.post("/login",async(req,res)=>{
     let input=req.body
     let username=req.body.username
-    let data=await gymModel.findOne({"username":username})
+    let data=await memberModel.findOne({"username":username})
     if (!data) {
         return res.json({
             status:"Invalid user"
@@ -50,11 +50,31 @@ router.post("/login",async(req,res)=>{
     })
 })
 router.get("/search",async(req,res)=>{
-    let result=await searchmodel.find()
-    .populate("name","address age contactno height weight -_id")
-    .exec()
-    res.json(result)
+    let input=req.body
+    let name=req.body.name
+    let data=await memberModel.find({"name":name})
+   
+    if (!data) {
+        return res.json({
+            status:"Invalid user"
+        })
+    }
+    else{
+        const responseData = data.map(user => ({
+            name: user.name,
+            address: user.address,
+            weight: user.weight,
+            height: user.height,
+            idproof: user.idproof,
+            emailid: user.emailid,
+            contactno: user.contactno
+        }))
 
+        console.log(responseData);
+
+        return res.json(responseData);
+    } 
+    
 })
 
 module.exports=router
