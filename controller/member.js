@@ -49,7 +49,12 @@ router.post("/login",async(req,res)=>{
     })
 })
 
+router.get("/viewregistered",async(req,res)=>{
 
+    let data = await memberModel.find()
+    res.json(data)
+
+})
 
 router.get("/MemberDetails", async (req, res) => {
     try {
