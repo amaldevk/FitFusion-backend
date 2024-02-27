@@ -1,5 +1,6 @@
 const express=require("express")
 const memberModel=require("../models/memberModel")
+const searchmodel=require("../models/searchModel")
 
 const router=express.Router()
 
@@ -33,12 +34,6 @@ router.post("/login",async(req,res)=>{
             status:"Invalid user"
         })
     }
-    router.get("/view",async(req,res)=>{
-        let data=await postmodel.find()
-        .populate("username","name age address emailid -_id")
-        .exec()
-        res.json(data)
-    })
     console.log(data)
     let dbpassword=data.password
     let inputpassword=req.body.password
@@ -53,6 +48,13 @@ router.post("/login",async(req,res)=>{
     res.json({
         status:"success"
     })
+})
+router.get("/search",async(req,res)=>{
+    let result=await searchmodel.find()
+    .populate("name","address age contactno height weight -_id")
+    .exec()
+    res.json(result)
+
 })
 
 module.exports=router
