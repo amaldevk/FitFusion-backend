@@ -14,7 +14,12 @@ const packageschema=new mongoose.Schema(
         duration:{
             type:String,
             required:true
+        },
+        description:{
+            type:String,
+            required:true
         }
+
     }
 )
 
