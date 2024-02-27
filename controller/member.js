@@ -54,6 +54,10 @@ router.post("/login",async(req,res)=>{
         status:"success"
     })
 })
+router.get("/search",(req,res)=>
+{
+    
+})
 
 
 
