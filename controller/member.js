@@ -49,12 +49,7 @@ router.post("/login",async(req,res)=>{
     })
 })
 
-router.get("/viewregistered",async(req,res)=>{
 
-    let data = await memberModel.find()
-    res.json(data)
-
-})
 
 router.post("/MemberDetails", async (req, res) => {
     try {
@@ -80,14 +75,6 @@ router.post("/MemberDetails", async (req, res) => {
 
 
 
-router.post("/update",async(req,res)=>{
-    console.log(req.body)
-    let {id,...rest} = req.body
-    console.log(rest)
-    let data = await memberModel.updateOne({_id:id},rest)
-    res.json({
-        status:"success"
-    })
-})
+
 
 module.exports=router
