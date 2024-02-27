@@ -1,6 +1,7 @@
 const express=require("express")
 const memberModel=require("../models/memberModel")
 
+
 const router=express.Router()
 
 const bcrypt=require("bcryptjs")
@@ -27,7 +28,7 @@ router.post("/signup",async(req,res)=>{
 router.post("/login",async(req,res)=>{
     let input=req.body
     let username=req.body.username
-    let data=await gymModel.findOne({"username":username})
+    let data=await memberModel.findOne({"username":username})
     if (!data) {
         return res.json({
             status:"Invalid user"
@@ -47,6 +48,33 @@ router.post("/login",async(req,res)=>{
     res.json({
         status:"success"
     })
+})
+router.get("/search",async(req,res)=>{
+    let input=req.body
+    let name=req.body.name
+    let data=await memberModel.find({"name":name})
+   
+    if (!data || data.length === 0) {
+        return res.json({
+            status:"Invalid user"
+        })
+    }
+    else{
+        const responseData = data.map(user => ({
+            name: user.name,
+            address: user.address,
+            weight: user.weight,
+            height: user.height,
+            idproof: user.idproof,
+            emailid: user.emailid,
+            contactno: user.contactno
+        }))
+
+        console.log(responseData);
+
+        return res.json(responseData);
+    } 
+    
 })
 
 
