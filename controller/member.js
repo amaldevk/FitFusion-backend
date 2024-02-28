@@ -52,7 +52,7 @@ router.post("/login",async(req,res)=>{
         })
     }
     res.json({
-        status:"success"
+        status:"success","userdata":data
     })
 })
 router.get("/search",async(req,res)=>{
