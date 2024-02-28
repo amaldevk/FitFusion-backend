@@ -95,7 +95,7 @@ router.get("/MemberDetails", async (req, res) => {
     }
 });
 
-router.get("/search",async(req,res)=>{
+router.post("/search",async(req,res)=>{
     let input=req.body
     let name=req.body.name
     let data=await memberModel.find({"name":name})
