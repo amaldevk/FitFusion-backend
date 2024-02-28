@@ -25,36 +25,36 @@ router.post("/signup",async(req,res)=>{
     )
 })
 
-router.post("/login",async(req,res)=>{
-    let input=req.body
-    let username=req.body.username
-    let data=await memberModel.findOne({"username":username})
-    if (!data) {
-        return res.json({
-            status:"Invalid user"
-        })
+router.post("/login", async (req, res) => {
+    try {
+        let input = req.body;
+        let username = req.body.username;
+        let data = await memberModel.findOne({ "username": username });
+        if (!data) {
+            return res.json({
+                status: "Invalid user"
+            });
+        }
+
+        let dbpassword = data.password;
+        let inputpassword = req.body.password;
+        const match = await bcrypt.compare(inputpassword, dbpassword);
+        if (!match) {
+            return res.json({
+                status: "Incorrect password"
+            });
+        }
+
+        // If username and password are correct, return success
+        res.json({
+            status: "success"
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
     }
-    router.get("/view",async(req,res)=>{
-        let data=await postmodel.find()
-        .populate("username","name age address emailid -_id")
-        .exec()
-        res.json(data)
-    })
-    console.log(data)
-    let dbpassword=data.password
-    let inputpassword=req.body.password
-    console.log(dbpassword)
-    console.log(inputpassword)
-    const match=await bcrypt.compare(inputpassword,dbpassword)
-    if (!match) {
-        return res.json({
-            status:"Incorrect password"
-        })
-    }
-    res.json({
-        status:"success"
-    })
 })
+
 router.get("/search",async(req,res)=>{
     let input=req.body
     let name=req.body.name
@@ -123,8 +123,34 @@ router.get("/search",async(req,res)=>{
     
 })
 
+router.post("/update", async (req, res) => {
+    try {
+        const { emailid, paymentStatus } = req.body;
 
+        // Validate payment status
+        if (paymentStatus !== "Success" && paymentStatus !== "pending") {
+            return res.status(400).json({ error: "Invalid payment status" });
+        }
 
+        // Update payment status based on email ID
+        await memberModel.findOneAndUpdate({ emailid }, { paymentStatus });
+
+        const updatedMember = await memberModel.findOne({ emailid });
+        let statusMessage = "";
+        if (paymentStatus === "Success") {
+            statusMessage = "Approved";
+            // Approve user
+            await memberModel.findOneAndUpdate({ emailid }, { status: "approved" });
+        } else {
+            statusMessage = "Updated Payment Status";
+        }
+
+        return res.json({ status: statusMessage, updatedMember });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+})
 
 
 module.exports=router
