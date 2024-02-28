@@ -14,7 +14,9 @@ router.post("/addpackage",async(req,res)=>{
 
 router.get("/viewpackage",async(req,res)=>{
     let result =await packagemodel.find()
-    res.json(result)
+    console.log(result)
+    res.json({result})
+    
 })
 
 module.exports=router
