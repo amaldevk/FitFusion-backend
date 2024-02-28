@@ -17,6 +17,21 @@ router.get("/viewpackage",async(req,res)=>{
     res.json(result)
 })
 
+
+
+router.post("/packageselect",async(req,res)=>{
+    let input=req.body
+    let packageName=req.body.username
+    let data=await packagemodel.findOne({"PackageName":packageName})
+    
+
+    console.log(data)
+    res.json({
+        status:"success","userdata":data
+    })
+})
+
+
 module.exports=router
 
 
