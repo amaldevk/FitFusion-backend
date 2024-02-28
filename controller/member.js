@@ -29,6 +29,7 @@ router.post("/login",async(req,res)=>{
     let input=req.body
     let username=req.body.username
     let data=await memberModel.findOne({"username":username})
+    
     if (!data) {
         return res.json({
             status:"Invalid user"
