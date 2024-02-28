@@ -22,6 +22,6 @@ app.use("/api/trainer",Trainerroute)
 app.use("/api/tran",transroute)
 
 
-app.listen(3005,()=>{
+app.listen(3006,()=>{
     console.log("Server Running")
 })
