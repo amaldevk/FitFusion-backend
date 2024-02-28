@@ -48,7 +48,7 @@ router.post("/login",async(req,res)=>{
         })
     }
     res.json({
-        status:"success","userdata":data
+        status:"success","userdata":data,"paymentStatus":data.paymentStatus
     })
 })
 
