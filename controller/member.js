@@ -55,6 +55,7 @@ router.post("/login",async(req,res)=>{
         status:"success"
     })
 })
+
 router.get("/search",async(req,res)=>{
     let input=req.body
     let name=req.body.name
