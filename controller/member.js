@@ -101,6 +101,35 @@ router.post("/search",async(req,res)=>{
     
 })
 
+router.post("/update", async (req, res) => {
+    try {
+        const { emailid, paymentStatus } = req.body;
+
+        // Validate payment status
+        if (paymentStatus !== "Success" && paymentStatus !== "pending") {
+            return res.status(400).json({ error: "Invalid payment status" });
+        }
+
+        // Update payment status based on email ID
+        await memberModel.findOneAndUpdate({ emailid }, { paymentStatus });
+
+
+        const updatedMember = await memberModel.findOne({ emailid });
+        let statusMessage = "";
+        if (paymentStatus === "Success") {
+            statusMessage = "Approved";
+            // Approve user
+            await memberModel.findOneAndUpdate({ emailid }, { status: "approved" });
+        } else {
+            statusMessage = "Updated Payment Status";
+        }
+
+        return res.json({ status: statusMessage, updatedMember });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+})
 
 
 
