@@ -34,12 +34,7 @@ router.post("/login",async(req,res)=>{
             status:"Invalid user"
         })
     }
-    router.get("/view",async(req,res)=>{
-        let data=await postmodel.find()
-        .populate("username","name age address emailid -_id")
-        .exec()
-        res.json(data)
-    })
+
     console.log(data)
     let dbpassword=data.password
     let inputpassword=req.body.password
@@ -55,6 +50,15 @@ router.post("/login",async(req,res)=>{
         status:"success","userdata":data
     })
 })
+
+
+    router.get("/view",async(req,res)=>{
+        let data=await postmodel.find()
+        .populate("username","name age address emailid -_id")
+        .exec()
+        res.json(data)
+    })
+    
 
 router.get("/MemberDetails", async (req, res) => {
     try {
