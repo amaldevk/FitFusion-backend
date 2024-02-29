@@ -10,6 +10,7 @@ const packageroute=require("./controller/packageRoute")
 const Trainerroute=require("./controller/TrainerRouter")
 const transroute=require("./controller/transaction")
 
+
 app.use(express.json())
 app.use(cors())
 
@@ -20,6 +21,7 @@ app.use("/api/admin",adminRoute)
 app.use("/api/packages",packageroute)
 app.use("/api/trainer",Trainerroute)
 app.use("/api/tran",transroute)
+
 
 
 app.listen(3006,()=>{
