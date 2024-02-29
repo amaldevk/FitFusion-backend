@@ -101,35 +101,43 @@ router.post("/search",async(req,res)=>{
     
 })
 
-router.post("/update", async (req, res) => {
+router.post("/myprofile", async (req, res) => {
+    let input = req.body;
+    let userId = req.body.userId; // Assuming you send the user's object ID as userId in the request body
+    let data;
+
     try {
-        const { emailid, paymentStatus } = req.body;
-
-        // Validate payment status
-        if (paymentStatus !== "Success" && paymentStatus !== "pending") {
-            return res.status(400).json({ error: "Invalid payment status" });
-        }
-
-        // Update payment status based on email ID
-        await memberModel.findOneAndUpdate({ emailid }, { paymentStatus });
-
-
-        const updatedMember = await memberModel.findOne({ emailid });
-        let statusMessage = "";
-        if (paymentStatus === "Success") {
-            statusMessage = "Approved";
-            // Approve user
-            await memberModel.findOneAndUpdate({ emailid }, { status: "approved" });
+        // Find the user profile by ID
+        data = await memberModel.findById(userId);
+        
+        if (!data) {
+            return res.json({
+                status: "Invalid user"
+            });
         } else {
-            statusMessage = "Updated Payment Status";
-        }
+            // Prepare response data
+            const responseData = {
+                name: data.name,
+                address: data.address,
+                weight: data.weight,
+                height: data.height,
+                idproof: data.idproof,
+                emailid: data.emailid,
+                contactno: data.contactno
+            };
 
-        return res.json({ status: statusMessage, updatedMember });
+            console.log(responseData);
+
+            return res.json(responseData);
+        }
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: "Internal server error" });
+        console.error('Error fetching user profile:', error);
+        return res.status(500).json({
+            status: "Internal Server Error"
+        });
     }
-})
+});
+
 
 
 
