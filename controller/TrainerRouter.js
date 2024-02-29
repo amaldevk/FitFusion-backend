@@ -14,9 +14,10 @@ router.post("/addtrainer",async(req,res)=>{
 
 })
 
+
 router.get("/viewtrainers",async(req,res)=>{
-    let data = await TrainerModel.find()
-    res.json(data)
+    let result =await TrainerModel.find()
+    res.json(result)
 })
 
 module.exports=router
