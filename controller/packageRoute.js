@@ -1,5 +1,6 @@
 const express=require("express")
 const packagemodel=require("../models/packageModel")
+const packageModel = require("../models/packageModel")
 
 const router=express.Router()
 
@@ -31,6 +32,13 @@ router.post("/packageselect",async(req,res)=>{
     })
 })
 
+router.post("/deletepackage",async(req,res)=>{
+    let input=req.body
+    let response=await packageModel.deleteOne(input)
+    res.json({
+        "status":"success"
+    })
+})
 
 module.exports=router
 
