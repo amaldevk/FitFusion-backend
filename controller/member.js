@@ -84,9 +84,9 @@ router.get("/MemberDetails", async (req, res) => {
 
         res.json(members);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message })
     }
-});
+})
 
 router.post("/search",async(req,res)=>{
     let input=req.body
@@ -117,18 +117,18 @@ router.post("/search",async(req,res)=>{
 })
 
 router.post("/myprofile", async (req, res) => {
-    let input = req.body;
-    let userId = req.body.userId; // Assuming you send the user's object ID as userId in the request body
+    let input = req.body
+    let userId = req.body.userId // Assuming you send the user's object ID as userId in the request body
     let data;
 
     try {
         // Find the user profile by ID
-        data = await memberModel.findById(userId);
+        data = await memberModel.findById(userId)
         
         if (!data) {
             return res.json({
                 status: "Invalid user"
-            });
+            })
         } else {
             // Prepare response data
             const responseData = {
@@ -139,19 +139,21 @@ router.post("/myprofile", async (req, res) => {
                 idproof: data.idproof,
                 emailid: data.emailid,
                 contactno: data.contactno
-            };
+            }
 
-            console.log(responseData);
+            console.log(responseData)
 
-            return res.json(responseData);
+            return res.json(responseData)
         }
     } catch (error) {
-        console.error('Error fetching user profile:', error);
+        console.error('Error fetching user profile:', error)
         return res.status(500).json({
             status: "Internal Server Error"
-        });
+        })
     }
-});
+})
+
+
 
 
 
