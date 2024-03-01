@@ -1,5 +1,6 @@
 const express=require("express")
 const memberModel=require("../models/memberModel")
+// const jwt=require("jsonwebtoken")
 
 
 const router=express.Router()
@@ -27,8 +28,8 @@ router.post("/signup",async(req,res)=>{
 
 router.post("/login",async(req,res)=>{
     let input=req.body
-    let username=req.body.username
-    let data=await memberModel.findOne({"username":username})
+    let emailid=req.body.emailid
+    let data=await memberModel.findOne({"emailid":emailid})
     
     if (!data) {
         return res.json({
@@ -49,7 +50,21 @@ router.post("/login",async(req,res)=>{
     }
     res.json({
         status:"success","userdata":data,"paymentStatus":data.paymentStatus
+        // ,"token":token
     })
+//    jwt.sign({email:emailid},"gym",{expiresIn:"1d"},
+//    (error,token)=>{
+//     if (error) {
+//         res.json({
+//             status:"error",
+//             "error":error
+//         })
+//     } else {
+//         res.json({
+//             status:"success","userdata":data,"paymentStatus":data.paymentStatus,"token":token
+//         })
+//     }
+//    })
 })
 
 
