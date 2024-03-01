@@ -33,8 +33,10 @@ router.post("/packageselect",async(req,res)=>{
 })
 
 router.post("/deletepackage",async(req,res)=>{
-    let input=req.body
-    let response=await packageModel.deleteOne(input)
+    console.log(req.body)
+    let{id}=req.body
+    console.log(id)
+    let data=await packageModel.deleteOne({_id:id})
     res.json({
         "status":"success"
     })
