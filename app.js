@@ -9,6 +9,7 @@ const adminRoute = require("./controller/adminRoute")
 const packageroute=require("./controller/packageRoute")
 const Trainerroute=require("./controller/TrainerRouter")
 const transroute=require("./controller/transaction")
+const subscriptionRoute=require("./controller/subscriptionRoute")
 
 
 app.use(express.json())
@@ -21,6 +22,7 @@ app.use("/api/admin",adminRoute)
 app.use("/api/packages",packageroute)
 app.use("/api/trainer",Trainerroute)
 app.use("/api/tran",transroute)
+app.use("/api/subscription",subscriptionRoute)
 
 
 
