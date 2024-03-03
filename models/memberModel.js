@@ -54,7 +54,8 @@ const userSchema=new mongoose.Schema(
             type:String, 
             required:true
         },
-        paymentStatus:String
+        paymentStatus:String,
+        attendence:String
     }
 )
 
