@@ -9,20 +9,42 @@ const router = express.Router()
 
 
 
-router.post("/select", async (req, res) => {
+// router.post("/select", async (req, res) => {
 
+//     const { userId, packageId } = req.body;
+
+//     try {
+//         // Check if the user has already selected this package
+//         const existingSubscription = await subscriptionModel.findOne({ userId, packageId });
+//         if (existingSubscription) {
+//             return res.status(400).json({ message: "Package already selected by this user" });
+//         }
+
+//         // Create a new subscription
+//         const subscription = new subscriptionModel({ userId, packageId });
+//         await subscription.save();
+        
+//         res.status(201).json({ message: "Package selected successfully" });
+//     } catch (error) {
+//         console.error("Error selecting package:", error);
+//         res.status(500).json({ message: "Internal Server Error" });
+//     }
+// });
+
+router.post("/select", async (req, res) => {
     const { userId, packageId } = req.body;
 
     try {
-        // Check if the user has already selected this package
-        const existingSubscription = await subscriptionModel.findOne({ userId, packageId });
+        // Check if the user already has a selected package
+        const existingSubscription = await subscriptionModel.findOne({ userId });
+
         if (existingSubscription) {
-            return res.status(400).json({ message: "Package already selected by this user" });
+            return res.status(400).json({ message: "User already has a selected package" });
         }
 
-        // Create a new subscription
-        const subscription = new subscriptionModel({ userId, packageId });
-        await subscription.save();
+        // Create a new subscription for the selected package
+        const newSubscription = new subscriptionModel({ userId, packageId });
+        await newSubscription.save();
         
         res.status(201).json({ message: "Package selected successfully" });
     } catch (error) {
@@ -30,6 +52,9 @@ router.post("/select", async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
+
+
+
 
 
 router.post("/selected", async (req, res) => {
@@ -56,29 +81,27 @@ router.post("/selected", async (req, res) => {
 
 
 router.post("/update", async (req, res) => {
-    const { userId, oldPackageId, newPackageId } = req.body;
+    const { userId, newPackageId } = req.body;
 
     try {
-        //  subscription of the user with the old package
-        const subscription = await subscriptionModel.findOne({ userId, packageId: oldPackageId });
+        // Check if the user already has a selected package
+        const existingSubscription = await subscriptionModel.findOne({ userId });
 
-        if (!subscription) {
-            return res.status(404).json({ message: 'Subscription not found for the user and old package' });
+        if (!existingSubscription) {
+            return res.status(404).json({ message: "No package found for the user" });
         }
 
-        // Remove the old package from the user's subscription
-        await subscriptionModel.deleteOne({ userId, packageId: oldPackageId });
-
-        // Add the new package to the user's subscription
-        const newSubscription = new subscriptionModel({ userId, packageId: newPackageId });
-        await newSubscription.save();
-
-        res.json({ message: 'Package updated successfully' });
+        // Update the user's subscription with the new package
+        existingSubscription.packageId = newPackageId;
+        await existingSubscription.save();
+        
+        res.status(200).json({ message: "Package updated successfully" });
     } catch (error) {
         console.error("Error updating package:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
+
 
 
 
