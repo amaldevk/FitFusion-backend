@@ -55,11 +55,8 @@ const userSchema=new mongoose.Schema(
             required:true
         },
         paymentStatus:String,
-        packageId:{
-            type : mongoose.Schema.Types.ObjectId,
-            required : true,
-            ref : "packages"
-        }
+        
+        
     }
 )
 

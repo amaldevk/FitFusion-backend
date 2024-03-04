@@ -1,6 +1,6 @@
 const express=require("express")
 const memberModel=require("../models/memberModel")
-// const jwt = require("jsonwebtoken")
+ const jwt = require("jsonwebtoken")
 
 
 const router=express.Router()
@@ -49,19 +49,19 @@ router.post("/login",async(req,res)=>{
         })
     }
     
-//    jwt.sign({email:emailid},"gym",{expiresIn:"1d"},
-//    (error,token)=>{
-//     if (error) {
-//         res.json({
-//             status:"error",
-//             "error":error
-//         })
-//     } else {
+   jwt.sign({email:emailid},"gym",{expiresIn:"1d"},
+   (error,token)=>{
+    if (error) {
         res.json({
-            status:"success","userdata":data,"paymentStatus":data.paymentStatus
+            status:"error",
+            "error":error
         })
-//     }
-//    })
+    } else {
+        res.json({
+            status:"success","userdata":data,"paymentStatus":data.paymentStatus,"token":token
+        })
+    }
+   })
 })
 
 
@@ -115,19 +115,19 @@ router.post("/search",async(req,res)=>{
 
 router.post("/myprofile", async (req, res) => {
 
-    // const token = req.headers["token"]
+    const token = req.headers["token"]
     
 
-    // jwt.verify(token,"gym",async(error,decoded)=>{
-    //     if(decoded && decoded.userId)
-    //     {
+    jwt.verify(token,"gym",async(error,decoded)=>{
+        if(decoded && decoded.email)
+        {
             let input = req.body
             let userId = req.body.userId // Assuming you send the user's object ID as userId in the request body
-            let data
+            
 
             try {
                 // Find the user profile by ID
-                data = await memberModel.findById(userId)
+               let data = await memberModel.findById(userId)
                 
                 if (!data) {
                     return res.json({
@@ -155,15 +155,15 @@ router.post("/myprofile", async (req, res) => {
                     status: "Internal Server Error"
                 })
             }
-        // }
-        // else{
-        //     res.json(
-        //         {
-        //             status : "unauthorized user"
-        //         }
-        //     )
-        // }
-    // })
+        }
+        else{
+            res.json(
+                {
+                    status : "unauthorized user"
+                }
+            )
+        }
+    })
 })
 
 

@@ -36,9 +36,9 @@ router.post("/select", async (req, res) => {
 
 router.post("/selected", async (req, res) => {
 
-    // const token = req.headers["token"]
-    // jwt.verify(token,"gym",async(error,decoded)=>{
-    //     if (decoded && decoded.userId) {
+    const token = req.headers["token"]
+    jwt.verify(token,"gym",async(error,decoded)=>{
+        if (decoded && decoded.email) {
             
             const { userId } = req.body;
 
@@ -50,10 +50,10 @@ router.post("/selected", async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 
-        // } else {
-        //     status : "unauthorized user"
-        // }
-    // })
+        } else {
+            status : "unauthorized user"
+        }
+    })
 });
 
 
