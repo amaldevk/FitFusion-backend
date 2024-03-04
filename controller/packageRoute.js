@@ -13,6 +13,18 @@ router.post("/addpackage",async(req,res)=>{
     })
 })
 
+router.post("/searchpackage", async (req, res) => {
+    try {
+        let data=req.body
+        let result = await packageModel.findOne(data)
+        res.json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+
 router.get("/viewpackage",async(req,res)=>{
     let result =await packagemodel.find()
     res.json(result)
