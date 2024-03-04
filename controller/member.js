@@ -57,9 +57,9 @@ router.post("/login",async(req,res)=>{
 //             "error":error
 //         })
 //     } else {
-//         res.json({
-//             status:"success","userdata":data,"paymentStatus":data.paymentStatus,"token":token
-//         })
+        res.json({
+            status:"success","userdata":data,"paymentStatus":data.paymentStatus
+        })
 //     }
 //    })
 })

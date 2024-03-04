@@ -2,34 +2,11 @@ const express = require("express")
 const subscriptionModel = require("../models/subscriptionModel");
 
 const jwt = require("jsonwebtoken");
-const memberModel = require("../models/memberModel");
+
+
 const router = express.Router()
 
 
-
-
-
-// router.post("/select", async (req, res) => {
-
-//     const { userId, packageId } = req.body;
-
-//     try {
-//         // Check if the user has already selected this package
-//         const existingSubscription = await subscriptionModel.findOne({ userId, packageId });
-//         if (existingSubscription) {
-//             return res.status(400).json({ message: "Package already selected by this user" });
-//         }
-
-//         // Create a new subscription
-//         const subscription = new subscriptionModel({ userId, packageId });
-//         await subscription.save();
-        
-//         res.status(201).json({ message: "Package selected successfully" });
-//     } catch (error) {
-//         console.error("Error selecting package:", error);
-//         res.status(500).json({ message: "Internal Server Error" });
-//     }
-// });
 
 router.post("/select", async (req, res) => {
     const { userId, packageId } = req.body;
@@ -59,9 +36,9 @@ router.post("/select", async (req, res) => {
 
 router.post("/selected", async (req, res) => {
 
-    const token = req.headers["token"]
-    jwt.verify(token,"gym",async(error,decoded)=>{
-        if (decoded && decoded.userId) {
+    // const token = req.headers["token"]
+    // jwt.verify(token,"gym",async(error,decoded)=>{
+    //     if (decoded && decoded.userId) {
             
             const { userId } = req.body;
 
@@ -73,10 +50,10 @@ router.post("/selected", async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 
-        } else {
-            status : "unauthorized user"
-        }
-    })
+        // } else {
+        //     status : "unauthorized user"
+        // }
+    // })
 });
 
 
