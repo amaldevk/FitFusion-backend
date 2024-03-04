@@ -1,6 +1,6 @@
 const express=require("express")
 const memberModel=require("../models/memberModel")
-// const jwt=require("jsonwebtoken")
+const jwt=require("jsonwebtoken")
 
 
 const router=express.Router()
@@ -48,23 +48,20 @@ router.post("/login",async(req,res)=>{
             status:"Incorrect password"
         })
     }
-    res.json({
-        status:"success","userdata":data,"paymentStatus":data.paymentStatus
-        // ,"token":token
-    })
-//    jwt.sign({email:emailid},"gym",{expiresIn:"1d"},
-//    (error,token)=>{
-//     if (error) {
-//         res.json({
-//             status:"error",
-//             "error":error
-//         })
-//     } else {
-//         res.json({
-//             status:"success","userdata":data,"paymentStatus":data.paymentStatus,"token":token
-//         })
-//     }
-//    })
+    
+   jwt.sign({email:emailid},"gym",{expiresIn:"1d"},
+   (error,token)=>{
+    if (error) {
+        res.json({
+            status:"error",
+            "error":error
+        })
+    } else {
+        res.json({
+            status:"success","userdata":data,"paymentStatus":data.paymentStatus,"token":token
+        })
+    }
+   })
 })
 
 
@@ -160,3 +157,8 @@ router.post("/myprofile", async (req, res) => {
 
 
 module.exports=router
+
+// res.json({
+//     status:"success","userdata":data,"paymentStatus":data.paymentStatus
+//      ,"token":token
+// })
