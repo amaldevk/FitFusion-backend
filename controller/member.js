@@ -1,6 +1,6 @@
 const express=require("express")
 const memberModel=require("../models/memberModel")
-const jwt=require("jsonwebtoken")
+// const jwt = require("jsonwebtoken")
 
 
 const router=express.Router()
@@ -49,19 +49,19 @@ router.post("/login",async(req,res)=>{
         })
     }
     
-   jwt.sign({email:emailid},"gym",{expiresIn:"1d"},
-   (error,token)=>{
-    if (error) {
-        res.json({
-            status:"error",
-            "error":error
-        })
-    } else {
-        res.json({
-            status:"success","userdata":data,"paymentStatus":data.paymentStatus,"token":token
-        })
-    }
-   })
+//    jwt.sign({email:emailid},"gym",{expiresIn:"1d"},
+//    (error,token)=>{
+//     if (error) {
+//         res.json({
+//             status:"error",
+//             "error":error
+//         })
+//     } else {
+//         res.json({
+//             status:"success","userdata":data,"paymentStatus":data.paymentStatus,"token":token
+//         })
+//     }
+//    })
 })
 
 
@@ -114,40 +114,56 @@ router.post("/search",async(req,res)=>{
 })
 
 router.post("/myprofile", async (req, res) => {
-    let input = req.body
-    let userId = req.body.userId // Assuming you send the user's object ID as userId in the request body
-    let data;
 
-    try {
-        // Find the user profile by ID
-        data = await memberModel.findById(userId)
+    // const token = req.headers["token"]
+    
+
+    // jwt.verify(token,"gym",async(error,decoded)=>{
+    //     if(decoded && decoded.userId)
+    //     {
+            let input = req.body
+            let userId = req.body.userId // Assuming you send the user's object ID as userId in the request body
+            let data
+
+            try {
+                // Find the user profile by ID
+                data = await memberModel.findById(userId)
+                
+                if (!data) {
+                    return res.json({
+                        status: "Invalid user"
+                    })
+                } else {
+                    // Prepare response data
+                    const responseData = {
+                        name: data.name,
+                        address: data.address,
+                        weight: data.weight,
+                        height: data.height,
+                        idproof: data.idproof,
+                        emailid: data.emailid,
+                        contactno: data.contactno
+                    }
         
-        if (!data) {
-            return res.json({
-                status: "Invalid user"
-            })
-        } else {
-            // Prepare response data
-            const responseData = {
-                name: data.name,
-                address: data.address,
-                weight: data.weight,
-                height: data.height,
-                idproof: data.idproof,
-                emailid: data.emailid,
-                contactno: data.contactno
+                    console.log(responseData)
+        
+                    return res.json(responseData)
+                }
+            } catch (error) {
+                console.error('Error fetching user profile:', error)
+                return res.status(500).json({
+                    status: "Internal Server Error"
+                })
             }
-
-            console.log(responseData)
-
-            return res.json(responseData)
-        }
-    } catch (error) {
-        console.error('Error fetching user profile:', error)
-        return res.status(500).json({
-            status: "Internal Server Error"
-        })
-    }
+        // }
+        // else{
+        //     res.json(
+        //         {
+        //             status : "unauthorized user"
+        //         }
+        //     )
+        // }
+    // })
 })
 
 
