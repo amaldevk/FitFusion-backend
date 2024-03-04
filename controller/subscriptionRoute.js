@@ -85,12 +85,60 @@ router.post("/update", async (req, res) => {
 
 
 
+// router.get("/due", async (req, res) => {
+//     try {
+//         const subscriptions = await subscriptionModel.find().populate({
+//             path: "userId",
+//             select: "name emailid" // Select the fields you want to include from the user document
+//         }).populate("packageId");
+
+//         const subscriptionDetails = await Promise.all(
+//             subscriptions.map(async (subscription) => {
+//                 let dueAmount = 0;
+//                 let remainingDaysForDue = 0;
+//                 const currentDate = new Date();
+//                 const packageSelectedDate = new Date(subscription.subscriptionDate);
+
+//                 const workoutDays = Math.ceil((currentDate - packageSelectedDate) / (1000 * 60 * 60 * 24));
+//                 remainingDaysForDue = 30 - (workoutDays % 30);
+
+//                 let oldPackageAmount = 0;
+//                 if (subscription.lastUpdateDate) {
+//                     oldPackageAmount = subscription.previousPackageAmount;
+//                     const oldPackageAmountperWork = parseFloat(oldPackageAmount) / 30 * workoutDays;
+//                     dueAmount = oldPackageAmountperWork + subscription.newPackageAmount;
+//                 } else {
+//                     oldPackageAmount = parseFloat(subscription.previousPackageAmount);
+//                     dueAmount = oldPackageAmount;
+//                 }
+
+//                 return {
+//                     name: subscription.userId.name,
+//                     emailid: subscription.userId.emailid,
+//                     packageName: subscription.packageId.packageName,
+//                     dueAmount: dueAmount.toFixed(2),
+//                     remainingDaysForDue: remainingDaysForDue >= 0 ? remainingDaysForDue : 0
+//                 };
+//             })
+//         );
+
+//         res.json(subscriptionDetails);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: "Internal server error" });
+//     }
+// });
+
+
 router.get("/due", async (req, res) => {
     try {
         const subscriptions = await subscriptionModel.find().populate({
             path: "userId",
-            select: "name emailid" // Select the fields you want to include from the user document
-        }).populate("packageId");
+            select: "name emailid"
+        }).populate({
+            path: "packageId",
+            select: "packageName price duration" // Include the price field from the package document
+        });
 
         const subscriptionDetails = await Promise.all(
             subscriptions.map(async (subscription) => {
@@ -104,9 +152,9 @@ router.get("/due", async (req, res) => {
 
                 let oldPackageAmount = 0;
                 if (subscription.lastUpdateDate) {
-                    oldPackageAmount = subscription.previousPackageAmount;
+                    oldPackageAmount = subscription.packageId.price; // Retrieve the price of the previous package
                     const oldPackageAmountperWork = parseFloat(oldPackageAmount) / 30 * workoutDays;
-                    dueAmount = oldPackageAmountperWork + subscription.newPackageAmount;
+                    dueAmount = oldPackageAmountperWork + subscription.packageId.price; // Add the price of the new package
                 } else {
                     oldPackageAmount = parseFloat(subscription.previousPackageAmount);
                     dueAmount = oldPackageAmount;
@@ -116,6 +164,7 @@ router.get("/due", async (req, res) => {
                     name: subscription.userId.name,
                     emailid: subscription.userId.emailid,
                     packageName: subscription.packageId.packageName,
+                    packagePrice: subscription.packageId.price, // Include the price of the package
                     dueAmount: dueAmount.toFixed(2),
                     remainingDaysForDue: remainingDaysForDue >= 0 ? remainingDaysForDue : 0
                 };
