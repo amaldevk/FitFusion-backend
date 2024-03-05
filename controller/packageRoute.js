@@ -42,7 +42,15 @@ router.post("/deletepackage",async(req,res)=>{
     })
 })
 
-
+router.post("/updatepackage",async(req,res)=>{
+    console.log(req.body)
+    let {id,...rest} = req.body
+    console.log(rest)
+    let data=await packageModel.updateOne({_id:id},rest)
+    res.json({
+        status:"success"
+    })
+})
 
 
 module.exports=router
