@@ -22,8 +22,8 @@ router.get("/viewpackage",async(req,res)=>{
 
 router.post("/packageselect",async(req,res)=>{
     let input=req.body
-    let packageName=req.body.username
-    let data=await packagemodel.findOne({"PackageName":packageName})
+    let packageName=req.body.packageName
+    let data=await packagemodel.findOne({"packageName":packageName})
     
 
     console.log(data)
@@ -31,6 +31,7 @@ router.post("/packageselect",async(req,res)=>{
         status:"success","userdata":data
     })
 })
+
 
 router.post("/deletepackage",async(req,res)=>{
     console.log(req.body)
