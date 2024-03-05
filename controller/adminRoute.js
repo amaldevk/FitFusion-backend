@@ -34,7 +34,21 @@ router.post("/delete",async(req,res)=>{
     })
 })
 
-
+router.post("/adminlogin",async(req,res)=>{
+    let input=req.body
+    let username="admin"
+    let password="admin"
+    if (input.username == "admin" && input.password == "admin") {
+        return res.json({
+            status:"success"
+        })
+    }
+    else{
+        res.json({
+            status:"Invalid credentials"
+        })
+    }
+})
 
 
 
