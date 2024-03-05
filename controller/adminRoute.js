@@ -39,8 +39,18 @@ router.post("/adminlogin",async(req,res)=>{
     let username="admin"
     let password="admin"
     if (input.username == "admin" && input.password == "admin") {
-        return res.json({
-            status:"success"
+        jwt.sign({name:username},"gymadmin",{expiresIn:"1d"},
+        (error,token)=>{
+         if (error) {
+             res.json({
+                 status:"error",
+                 "error":error
+             })
+         } else {
+             res.json({
+                 status:"success","token":token
+             })
+         }
         })
     }
     else{
