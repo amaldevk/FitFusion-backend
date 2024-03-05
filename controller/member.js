@@ -77,7 +77,7 @@ router.get("/MemberDetails", async (req, res) => {
     try {
         const members = await memberModel.find({})
             .populate("username", "-_id")
-            .select("-_id name paymentStatus age contactno emailid gender bloodgroup height weight idproof");
+            .select("_id name paymentStatus age contactno emailid gender bloodgroup height weight idproof");
 
         res.json(members);
     } catch (error) {
