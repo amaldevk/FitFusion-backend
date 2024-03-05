@@ -36,6 +36,7 @@ router.post("/select", async (req, res) => {
 
 
 router.post("/selected", async (req, res) => {
+    
 
     const token = req.headers["token"]
     jwt.verify(token,"gym",async(error,decoded)=>{
@@ -59,33 +60,44 @@ router.post("/selected", async (req, res) => {
 
 
 router.post("/update", async (req, res) => {
-    const { userId, newPackageId } = req.body;
+    const token = req.headers["token"]
+    jwt.verify(token,"gym",async(error,decoded)=>{
+        if (decoded && decoded.email) {
+            const { userId, newPackageId } = req.body;
 
-    try {
-        // Check if the user already has a selected package
-        const existingSubscription = await subscriptionModel.findOne({ userId });
-
-        if (!existingSubscription) {
-            return res.status(404).json({ message: "No package found for the user" });
-        }
-
-        // Update the user's subscription with the new package
-        existingSubscription.packageId = newPackageId;
-        await existingSubscription.save();
+            try {
+                // Check if the user already has a selected package
+                const existingSubscription = await subscriptionModel.findOne({ userId });
         
-        // Make a request to store update history in another API
+
+                if (!existingSubscription) {
+                    return res.status(404).json({ message: "No package found for the user" });
+                }
+        
+                // Update the user's subscription with the new package
+                existingSubscription.packageId = newPackageId;
+                await existingSubscription.save();
+                
+          
+           // Make a request to store update history in another API
         await axios.post('http://localhost:3006/api/history/packagehistory', {
             userId,
             oldPackageId: existingSubscription.packageId,
             newPackageId,
             updatedAt: new Date()
         });
+          
+                res.status(200).json({ message: "Package updated successfully" });
+            } catch (error) {
+                console.error("Error updating package:", error);
+                res.status(500).json({ message: "Internal Server Error" });
+            }
+        }
+        else{
+            status : "unauthorized user"
+        }
+    })
 
-        res.status(200).json({ message: "Package updated successfully" });
-    } catch (error) {
-        console.error("Error updating package:", error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
 });
 
 
@@ -97,27 +109,6 @@ router.post("/update", async (req, res) => {
 
 
 
-// router.post("/update", async (req, res) => {
-//     const { userId, newPackageId } = req.body;
-
-//     try {
-//         // Check if the user already has a selected package
-//         const existingSubscription = await subscriptionModel.findOne({ userId });
-
-//         if (!existingSubscription) {
-//             return res.status(404).json({ message: "No package found for the user" });
-//         }
-
-//         // Update the user's subscription with the new package
-//         existingSubscription.packageId = newPackageId;
-//         await existingSubscription.save();
-        
-//         res.status(200).json({ message: "Package updated successfully" });
-//     } catch (error) {
-//         console.error("Error updating package:", error);
-//         res.status(500).json({ message: "Internal Server Error" });
-//     }
-// });
 
 
 
