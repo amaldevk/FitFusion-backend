@@ -2,6 +2,7 @@ const express = require("express")
 const subscriptionModel = require("../models/subscriptionModel");
 
 const jwt = require("jsonwebtoken");
+const { default: axios } = require("axios");
 
 
 const router = express.Router()
@@ -68,6 +69,7 @@ router.post("/update", async (req, res) => {
                 // Check if the user already has a selected package
                 const existingSubscription = await subscriptionModel.findOne({ userId });
         
+
                 if (!existingSubscription) {
                     return res.status(404).json({ message: "No package found for the user" });
                 }
@@ -76,6 +78,15 @@ router.post("/update", async (req, res) => {
                 existingSubscription.packageId = newPackageId;
                 await existingSubscription.save();
                 
+          
+           // Make a request to store update history in another API
+        await axios.post('http://localhost:3006/api/history/packagehistory', {
+            userId,
+            oldPackageId: existingSubscription.packageId,
+            newPackageId,
+            updatedAt: new Date()
+        });
+          
                 res.status(200).json({ message: "Package updated successfully" });
             } catch (error) {
                 console.error("Error updating package:", error);
@@ -86,7 +97,18 @@ router.post("/update", async (req, res) => {
             status : "unauthorized user"
         }
     })
+
 });
+
+
+
+
+
+
+
+
+
+
 
 
 
