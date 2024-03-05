@@ -131,6 +131,12 @@ router.get("/due", async (req, res) => {
     }
 });
 
+router.get("/view",async(req,res)=>{
+    let result =await subscriptionModel.find()
+    res.json(result)
+})
+
+
 
 
 
