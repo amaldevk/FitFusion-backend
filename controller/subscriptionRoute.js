@@ -8,27 +8,54 @@ const router = express.Router()
 
 
 
+// router.post("/select", async (req, res) => {
+//     const { userId, packageId } = req.body;
+
+//     try {
+//         // Check if the user already has a selected package
+//         const existingSubscription = await subscriptionModel.findOne({ userId });
+
+//         if (existingSubscription) {
+//             return res.status(400).json({ message: "User already has a selected package" });
+//         }
+
+//         // Create a new subscription for the selected package
+//         const newSubscription = new subscriptionModel({ userId, packageId });
+//         await newSubscription.save();
+        
+//         res.status(201).json({ message: "Package selected successfully" });
+//     } catch (error) {
+//         console.error("Error selecting package:", error);
+//         res.status(500).json({ message: "Internal Server Error" });
+//     }
+// });
 router.post("/select", async (req, res) => {
     const { userId, packageId } = req.body;
 
     try {
+        // Validate input
+        if (!userId || !packageId) {
+            return res.status(400).json({ success: false, message: "Both userId and packageId are required in the request body" });
+        }
+
         // Check if the user already has a selected package
         const existingSubscription = await subscriptionModel.findOne({ userId });
 
         if (existingSubscription) {
-            return res.status(400).json({ message: "User already has a selected package" });
+            return res.status(400).json({ success: false, message: "User already has a selected package" });
         }
 
         // Create a new subscription for the selected package
         const newSubscription = new subscriptionModel({ userId, packageId });
         await newSubscription.save();
-        
-        res.status(201).json({ message: "Package selected successfully" });
+
+        res.status(201).json({ success: true, message: "Package selected successfully" });
     } catch (error) {
         console.error("Error selecting package:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 });
+
 
 
 
