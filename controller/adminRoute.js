@@ -1,5 +1,6 @@
 const express = require("express")
 const memberModel = require("../models/memberModel")
+const jwt = require("jsonwebtoken")
 
 const router = express.Router()
 
@@ -32,6 +33,25 @@ router.post("/delete",async(req,res)=>{
         status:"success"
     })
 })
+
+router.post("/adminlogin",async(req,res)=>{
+    let input=req.body
+    let username="admin"
+    let password="admin"
+    if (input.username == "admin" && input.password == "admin") {
+        return res.json({
+            status:"success"
+        })
+    }
+    else{
+        res.json({
+            status:"Invalid credentials"
+        })
+    }
+})
+
+
+
 
 
 
