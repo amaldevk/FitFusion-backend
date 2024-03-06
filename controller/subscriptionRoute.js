@@ -24,12 +24,19 @@ router.post("/select", async (req, res) => {
         const newSubscription = new subscriptionModel({ userId, packageId });
         await newSubscription.save();
         
+        // Store package selection in history
+        await axios.post('http://localhost:3006/api/history/packagehistory', {
+            userId,
+            newPackageId: packageId,
+            updatedAt: new Date()
+        });
+
         res.status(201).json({ message: "Package selected successfully" });
     } catch (error) {
         console.error("Error selecting package:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
-});
+}); 
 
 
 
