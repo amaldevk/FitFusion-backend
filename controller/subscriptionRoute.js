@@ -3,6 +3,7 @@ const subscriptionModel = require("../models/subscriptionModel");
 
 const jwt = require("jsonwebtoken");
 const { default: axios } = require("axios");
+const packageModel = require("../models/packageModel");
 
 
 const router = express.Router()
@@ -66,47 +67,72 @@ router.post("/selected", async (req, res) => {
 });
 
 
+
 router.post("/update", async (req, res) => {
-    const token = req.headers["token"]
-    jwt.verify(token,"gym",async(error,decoded)=>{
+    const token = req.headers["token"];
+    jwt.verify(token, "gym", async (error, decoded) => {
         if (decoded && decoded.email) {
             const { userId, newPackageId } = req.body;
 
             try {
                 // Check if the user already has a selected package
                 const existingSubscription = await subscriptionModel.findOne({ userId });
-        
 
                 if (!existingSubscription) {
                     return res.status(404).json({ message: "No package found for the user" });
                 }
-        
+
+                // Retrieve the current and new package details
+                const currentPackage = await packageModel.findById(existingSubscription.packageId);
+                const newPackage = await packageModel.findById(newPackageId);
+
+                if (!currentPackage || !newPackage) {
+                    return res.status(404).json({ message: "Package not found" });
+                }
+
+                // Calculate refund and payment to admin if the package is updated on the same day
+                const currentDate = new Date();
+                const packageSelectedDate = new Date(existingSubscription.subscriptionDate);
+                const newpackageSelectedDate = new Date(existingSubscription.updatedAt);
+                let refund = 0;
+                let payToAdmin = 0;
+
+                if (
+                    currentDate.getFullYear() === packageSelectedDate.getFullYear() || newpackageSelectedDate.getFullYear() &&
+                    currentDate.getMonth() === packageSelectedDate.getMonth() || newpackageSelectedDate.getMonth() &&
+                    currentDate.getDate() === packageSelectedDate.getDate() || newpackageSelectedDate.getDate()
+                ) {
+                    if (newPackage.price > currentPackage.price) {
+                        payToAdmin = newPackage.price - currentPackage.price;
+                    } else if (currentPackage.price > newPackage.price) {
+                        refund = currentPackage.price - newPackage.price;
+                    }
+                }
+
                 // Update the user's subscription with the new package
                 existingSubscription.packageId = newPackageId;
                 await existingSubscription.save();
-                
-          
-           // Make a request to store update history in another API
-        await axios.post('http://localhost:3006/api/history/packagehistory', {
-            userId,
-            oldPackageId: existingSubscription.packageId,
-            newPackageId,
-            updatedAt: new Date()
-        });
-          
+
+                // Store package update in history along with refund and payment to admin
+                await axios.post("http://localhost:3006/api/history/packagehistory", {
+                    userId,
+                    oldPackageId: currentPackage._id,
+                    newPackageId,
+                    refund,
+                    payToAdmin,
+                    updatedAt: new Date(),
+                });
+
                 res.status(200).json({ message: "Package updated successfully" });
             } catch (error) {
                 console.error("Error updating package:", error);
                 res.status(500).json({ message: "Internal Server Error" });
             }
+        } else {
+            status: "unauthorized user";
         }
-        else{
-            status : "unauthorized user"
-        }
-    })
-
+    });
 });
-
 
 
 
