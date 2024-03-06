@@ -1,28 +1,39 @@
-// updateHistoryModel.js
+
 
 const mongoose = require('mongoose');
 
-const updateHistorySchema = new mongoose.Schema({
+const packageHistorySchema = new mongoose.Schema({
     userId: {
-        type : mongoose.Schema.Types.ObjectId,
-            required : true,
-            ref : "usergym"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'usergym',
+        required: true
     },
     oldPackageId: {
-        type : mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'packages',
         
-            ref : "packages"
     },
     newPackageId: {
-        type : mongoose.Schema.Types.ObjectId,
-            required : true,
-            ref : "packages"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'packages',
+        required: true
+    },
+    refund: {
+        type: Number,
+        default: 0
+    },
+    payToAdmin: {
+        type: Number,
+        default: 0
     },
     updatedAt: {
         type: Date,
-        default: Date.now
+        required: true
     }
 });
 
-module.exports = mongoose.model('UpdateHistory', updateHistorySchema);
+module.exports = mongoose.model('UpdateHistory', packageHistorySchema);
+
+ 
+
 
