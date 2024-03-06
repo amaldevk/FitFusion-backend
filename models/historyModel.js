@@ -10,7 +10,7 @@ const updateHistorySchema = new mongoose.Schema({
     },
     oldPackageId: {
         type : mongoose.Schema.Types.ObjectId,
-            required : true,
+        
             ref : "packages"
     },
     newPackageId: {
