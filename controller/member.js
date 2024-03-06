@@ -196,6 +196,27 @@ router.post("/update", async (req, res) => {
     }
 })
 
+router.delete("/delete", async (req, res) => {
+    try {
+        const { emailid } = req.body;
+
+        if (!emailid) {
+            return res.status(400).json({ error: "Email ID is required in the request body" });
+        }
+
+        // Find the member by email and delete it
+        const deletedMember = await memberModel.findOneAndDelete({ emailid });
+
+        if (!deletedMember) {
+            return res.status(404).json({ error: "Member not found" });
+        }
+
+        return res.json({ status: "Member deleted successfully", deletedMember });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 module.exports=router
 
