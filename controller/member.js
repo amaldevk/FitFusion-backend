@@ -218,6 +218,18 @@ router.delete("/delete", async (req, res) => {
     }
 });
 
+
+router.post("/approveUser", async (req, res) => {
+        try {
+          const userId = req.body.userId;
+          // Update the user's status to approved in the database
+          await User.findByIdAndUpdate(userId, { approved: true });
+          res.json({ success: true, message: "User approved successfully" });
+        } catch (error) {
+          res.status(500).json({ success: false, error: error.message });
+        }
+      });
+      
 module.exports=router
 
 // res.json({
