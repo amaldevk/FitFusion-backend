@@ -68,6 +68,7 @@ router.post("/selected", async (req, res) => {
 
 
 
+
 router.post("/update", async (req, res) => {
     const token = req.headers["token"];
     jwt.verify(token, "gym", async (error, decoded) => {
