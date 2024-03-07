@@ -104,7 +104,7 @@ router.post("/update", async (req, res) => {
                 ) {
                     if (newPackage.price > currentPackage.price) {
                         payToAdmin = newPackage.price - currentPackage.price;
-                    } else if (currentPackage.price > newPackage.price) {
+                    } else if (currentPackage.price < newPackage.price) {
                         refund = currentPackage.price - newPackage.price;
                     }
                 }
