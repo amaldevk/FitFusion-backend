@@ -11,6 +11,7 @@ const Trainerroute=require("./controller/TrainerRouter")
 const transroute=require("./controller/transaction")
 const subscriptionRoute=require("./controller/subscriptionRoute")
 const historyRoute=require("./controller/historyRoute")
+const dueRouter=require("./controller/dueRouter")
 
 
 app.use(express.json())
@@ -25,6 +26,7 @@ app.use("/api/trainer",Trainerroute)
 app.use("/api/tran",transroute)
 app.use("/api/subscription",subscriptionRoute)
 app.use("/api/history",historyRoute)
+app.use("/api/dueamount",dueRouter)
 
 
 
