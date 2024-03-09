@@ -4,26 +4,31 @@ const dueSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "usergym"
+        ref: 'usergym',
     },
     packageId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "packages"
+        ref: 'packages',
     },
-    dueAmount:{
-        type: Number, 
+    dueAmount: {
+        type: Number,
         required: true,
     },
     remainingDaysForDue: {
         type: Number,
-        required:true
+        required: true,
     },
     subscriptionDate: {
         type: Date,
         default: Date.now
     },
+    lastUpdateDate: {
+        type: Date,
+    },
+    previousPackageAmount: {
+        type: Number,
+    },
 });
 
-module.exports = mongoose.model("duePackage",dueSchema);
-
+module.exports = mongoose.model("duePackage", dueSchema);
