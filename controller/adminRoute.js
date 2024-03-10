@@ -34,31 +34,35 @@ router.post("/delete",async(req,res)=>{
     })
 })
 
-router.post("/adminlogin",async(req,res)=>{
-    let input=req.body
-    let username="admin"
-    let password="admin"
-    if (input.username == "admin" && input.password == "admin") {
-        jwt.sign({name:username},"gymadmin",{expiresIn:"1d"},
-        (error,token)=>{
-         if (error) {
-             res.json({
-                 status:"error",
-                 "error":error
-             })
-         } else {
-             res.json({
-                 status:"success","token":token
-             })
-         }
-        })
+router.post("/adminlogin", async (req, res) => {
+    try {
+        let input = req.body;
+        let username = "admin";
+        let password = "admin";
+        if (input.username == "admin" && input.password == "admin") {
+            jwt.sign({ name: username }, "gymadmin", { expiresIn: "1d" }, (error, token) => {
+                if (error) {
+                    res.json({
+                        status: "error",
+                        "error": error
+                    });
+                } else {
+                    res.json({
+                        status: "success", "token": token
+                    });
+                }
+            });
+        }
+        else {
+            res.json({
+                status: "Invalid credentials"
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
     }
-    else{
-        res.json({
-            status:"Invalid credentials"
-        })
-    }
-})
+});
 
 
 

@@ -27,6 +27,8 @@ router.post("/signup",async(req,res)=>{
 })
 
 router.post("/login",async(req,res)=>{
+    try{
+        
     let input=req.body
     let emailid=req.body.emailid
     let data=await memberModel.findOne({"emailid":emailid})
@@ -48,6 +50,9 @@ router.post("/login",async(req,res)=>{
             status:"Incorrect password"
         })
     }
+    if (!data.approved) {
+        return res.json({ status: "Account pending approval" });
+    }
     
    jwt.sign({email:emailid},"gym",{expiresIn:"1d"},
    (error,token)=>{
@@ -62,7 +67,12 @@ router.post("/login",async(req,res)=>{
         })
     }
    })
-})
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+}
+});
+
 
 
     router.get("/view",async(req,res)=>{
