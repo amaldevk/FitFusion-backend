@@ -2,7 +2,6 @@ const mongoose=require("mongoose")
 
 const packageschema=new mongoose.Schema(
     {
-
         packageName:{
             type:String,
             required:true
