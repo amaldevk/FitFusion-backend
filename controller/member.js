@@ -27,8 +27,6 @@ router.post("/signup",async(req,res)=>{
 })
 
 router.post("/login",async(req,res)=>{
-    try{
-        
     let input=req.body
     let emailid=req.body.emailid
     let data=await memberModel.findOne({"emailid":emailid})
@@ -50,9 +48,6 @@ router.post("/login",async(req,res)=>{
             status:"Incorrect password"
         })
     }
-    if (!data.approved) {
-        return res.json({ status: "Account pending approval" });
-    }
     
    jwt.sign({email:emailid},"gym",{expiresIn:"1d"},
    (error,token)=>{
@@ -67,12 +62,7 @@ router.post("/login",async(req,res)=>{
         })
     }
    })
-} catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
-}
-});
-
+})
 
 
     router.get("/view",async(req,res)=>{
@@ -87,7 +77,7 @@ router.get("/MemberDetails", async (req, res) => {
     try {
         const members = await memberModel.find({})
             .populate("username", "-_id")
-            .select("_id name paymentStatus age contactno emailid gender bloodgroup height weight idproof");
+            .select("_id name paymentStatus age contactno emailid gender bloodgroup height weight idproof ApprovelStatus");
 
         res.json(members);
     } catch (error) {
@@ -229,17 +219,38 @@ router.delete("/delete", async (req, res) => {
 });
 
 
-router.post("/approveUser", async (req, res) => {
-        try {
-          const userId = req.body.userId;
-          // Update the user's status to approved in the database
-          await User.findByIdAndUpdate(userId, { approved: true });
-          res.json({ success: true, message: "User approved successfully" });
-        } catch (error) {
-          res.status(500).json({ success: false, error: error.message });
-        }
-      });
+
       
+router.post("/approvel", async (req, res) => {
+    try {
+        const { emailid, ApprovelStatus } = req.body;
+
+        // Validate payment status
+        if (ApprovelStatus !== "Approved" && ApprovelStatus !== "Rejected") {
+            return res.status(400).json({ error: "Invalid Approvel status" });
+        }
+
+        // Update payment status based on email ID
+        await memberModel.findOneAndUpdate({ emailid }, { ApprovelStatus });
+
+
+        const ApprovelMember = await memberModel.findOne({ emailid });
+        let statusMessage = "";
+        if (ApprovelStatus === "Approved") {
+            statusMessage = "User Approved";
+            // Approve user
+            await memberModel.findOneAndUpdate({ emailid }, { status: "approved" });
+        } else {
+            statusMessage = "User Approved";
+        }
+
+        return res.json({ status: statusMessage, ApprovelMember });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+})
+
 module.exports=router
 
 // res.json({
