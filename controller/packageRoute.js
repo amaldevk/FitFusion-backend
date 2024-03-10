@@ -22,9 +22,9 @@ router.get("/viewpackage",async(req,res)=>{
 
 router.post("/packageselect",async(req,res)=>{
     let input=req.body
-    let packageName=req.body.packageName
-    let data=await packagemodel.findOne({"packageName":packageName})
-    
+    let packageid=req.body._id
+    console.log(packageid)
+    let data=await packagemodel.findOne({"_id":packageid})
 
     console.log(data)
     res.json({
