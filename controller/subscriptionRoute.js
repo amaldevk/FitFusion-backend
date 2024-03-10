@@ -112,9 +112,8 @@ router.post("/update", async (req, res) => {
                 // Update the user's subscription with the new package
                 existingSubscription.packageId = newPackageId;
                 await existingSubscription.save();
-
-                // Store package update in history along with refund and payment to admin
-                await axios.post("http://localhost:3006/api/history/packagehistory", {
+// Store package update in history along with refund and payment to admin await 
+axios.post("http://localhost:3006/api/history/packagehistory", {
                     userId,
                     oldPackageId: currentPackage._id,
                     newPackageId,
@@ -134,66 +133,100 @@ router.post("/update", async (req, res) => {
     });
 });
 
+router.post("/due", async (req, res) => {
+    const { userId } = req.body;
 
-
-
-
-
-
-
-
-
-
-
-
-
-router.get("/due", async (req, res) => {
     try {
-        const subscriptions = await subscriptionModel.find().populate({
-            path: "userId",
-            select: "name emailid"
-        }).populate({
-            path: "packageId",
-            select: "packageName price duration" // Include the price field from the package document
-        });
+        const existingSubscription = await subscriptionModel.findOne({ userId });
 
-        const subscriptionDetails = await Promise.all(
-            subscriptions.map(async (subscription) => {
-                let dueAmount = 0;
-                let remainingDaysForDue = 0;
-                const currentDate = new Date();
-                const packageSelectedDate = new Date(subscription.subscriptionDate);
+        if (!existingSubscription) {
+            return res.status(404).json({ message: "No package found for the user" });
+        }
 
-                const workoutDays = Math.ceil((currentDate - packageSelectedDate) / (1000 * 60 * 60 * 24));
-                remainingDaysForDue = 30 - (workoutDays % 30);
+        const currentPackage = await packageModel.findById(existingSubscription.packageId);
 
-                let oldPackageAmount = 0;
-                if (subscription.lastUpdateDate) {
-                    oldPackageAmount = subscription.packageId.price; // Retrieve the price of the previous package
-                    const oldPackageAmountperWork = parseFloat(oldPackageAmount) / 30 * workoutDays;
-                    dueAmount = oldPackageAmountperWork + subscription.packageId.price; // Add the price of the new package
-                } else {
-                    oldPackageAmount = parseFloat(subscription.previousPackageAmount);
-                    dueAmount = oldPackageAmount;
-                }
+        let dueAmount = 0;
+        let remainingDaysForDue = 0;
+        const currentDate = new Date();
+        const packageSelectedDate = new Date(existingSubscription.subscriptionDate);
 
-                return {
-                    name: subscription.userId.name,
-                    emailid: subscription.userId.emailid,
-                    packageName: subscription.packageId.packageName,
-                    packagePrice: subscription.packageId.price, // Include the price of the package
-                    dueAmount: dueAmount.toFixed(2),
-                    remainingDaysForDue: remainingDaysForDue >= 0 ? remainingDaysForDue : 0
-                };
-            })
-        );
+        const workoutDays = Math.ceil((currentDate - packageSelectedDate) / (1000 * 60 * 60 * 24));
+        remainingDaysForDue = 30 - (workoutDays % 30);
 
-        res.json(subscriptionDetails);
+        let oldPackageAmount = 0;
+
+        if (existingSubscription.lastUpdateDate) {
+            oldPackageAmount = existingSubscription.packageId.price;
+            const oldPackageAmountperWork = parseFloat(oldPackageAmount) / 30 * workoutDays;
+            dueAmount = oldPackageAmountperWork + existingSubscription.packageId.price;
+        } else {
+            oldPackageAmount = parseFloat(existingSubscription.previousPackageAmount);
+            dueAmount = oldPackageAmount;
+        }
+
+        const result = {
+            name: existingSubscription.userId.name,
+            emailid: existingSubscription.userId.emailid,
+            packageName: currentPackage.packageName,
+            packagePrice: currentPackage.price,
+            dueAmount: dueAmount.toFixed(2),
+            remainingDaysForDue: remainingDaysForDue >= 0 ? remainingDaysForDue : 0
+        };
+
+        res.json(result);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        console.error("Error in finding due:", error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 });
+
+// router.get("/due", async (req, res) => {
+//     try {
+//         const subscriptions = await subscriptionModel.find().populate({
+//             path: "userId",
+//             select: "name emailid"
+//         }).populate({
+//             path: "packageId",
+//             select: "packageName price duration" // Include the price field from the package document
+//         });
+
+//         const subscriptionDetails = await Promise.all(
+//             subscriptions.map(async (subscription) => {
+//                 let dueAmount = 0;
+//                 let remainingDaysForDue = 0;
+//                 const currentDate = new Date();
+//                 const packageSelectedDate = new Date(subscription.subscriptionDate);
+
+//                 const workoutDays = Math.ceil((currentDate - packageSelectedDate) / (1000 * 60 * 60 * 24));
+//                 remainingDaysForDue = 30 - (workoutDays % 30);
+
+//                 let oldPackageAmount = 0;
+//                 if (subscription.lastUpdateDate) {
+//                     oldPackageAmount = subscription.packageId.price; // Retrieve the price of the previous package
+//                     const oldPackageAmountperWork = parseFloat(oldPackageAmount) / 30 * workoutDays;
+//                     dueAmount = oldPackageAmountperWork + subscription.packageId.price; // Add the price of the new package
+//                 } else {
+//                     oldPackageAmount = parseFloat(subscription.previousPackageAmount);
+//                     dueAmount = oldPackageAmount;
+//                 }
+
+//                 return {
+//                     name: subscription.userId.name,
+//                     emailid: subscription.userId.emailid,
+//                     packageName: subscription.packageId.packageName,
+//                     packagePrice: subscription.packageId.price, // Include the price of the package
+//                     dueAmount: dueAmount.toFixed(2),
+//                     remainingDaysForDue: remainingDaysForDue >= 0 ? remainingDaysForDue : 0
+//                 };
+//             })
+//         );
+
+//         res.json(subscriptionDetails);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: "Internal server error" });
+//     }
+// });
 
 
 
