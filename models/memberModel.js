@@ -59,10 +59,12 @@ const userSchema=new mongoose.Schema(
             type:Date,
             default:Date.now
         },
-        approved: {
-            type: Boolean,
-            default: false // Default value is false indicating user is not approved initially
+        ApprovelStatus:String,
+        paymentDate:{
+            type:Date,
+            default:Date.now
         }
+        
         
     }
 )
