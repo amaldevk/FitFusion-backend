@@ -293,7 +293,7 @@ router.post("/due", async (req, res) => {
             // Retrieve the update date of the old package
             oldPackageUpdateDate = existingSubscription.lastUpdateDate;
         } else {
-            oldPackageAmount = parseFloat(existingSubscription.previousPackageAmount);
+            oldPackageAmount = parseInt(existingSubscription.previousPackageAmount);
             dueAmount = oldPackageAmount;
 
             // Extract the numeric value from the old package duration and multiply by 30
@@ -310,6 +310,7 @@ router.post("/due", async (req, res) => {
 
         // Calculate the remaining days for due using new package duration
         remainingDaysForDue = newPackageDuration - (workoutDays % 30);
+        
 
         // Retrieve the update date of the new package
         newPackageUpdateDate = existingSubscription.lastUpdateDate || existingSubscription.subscriptionDate;
@@ -319,7 +320,7 @@ router.post("/due", async (req, res) => {
             emailid: existingSubscription.userId.emailid,
             packageName: currentPackage.packageName,
             packagePrice: currentPackage.price,
-            dueAmount: dueAmount.toFixed(2),
+            dueAmount: dueAmount.toFixed(0),
             oldPackageDuration,
             newPackageDuration,
             oldPackageUpdateDate,

@@ -17,9 +17,9 @@ const subscribeSchema = new mongoose.Schema(
             type : Date,
             default:Date.now
         },
-        lastUpdateDate: {
-            type: Date
-        }
+        // lastUpdateDate: {
+        //     type: Date
+        // }
     }
 )
 
